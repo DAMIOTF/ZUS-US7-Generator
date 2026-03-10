@@ -80,6 +80,13 @@ Wynikowy plik: `dist/Generator_ZUS_US7.exe`
     └── handlers.py       # logika zdarzeń i generowanie PDF (mixin)
 ```
 
+## Licencja
+
+**Wszelkie prawa zastrzeżone © 2026 DAMIOTF.**
+
+Program jest objęty restrykcyjną licencją — zabrania się rozpowszechniania, sprzedaży, modyfikacji w celu redystrybucji oraz publikowania kodu źródłowego bez pisemnej zgody autora. Szczegóły w pliku [LICENSE](LICENSE).
+```
+
 ## Autor
 
 **Damian Marciniak** · [github.com/DAMIOTF](https://github.com/DAMIOTF)
