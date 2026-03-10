@@ -1,106 +1,85 @@
-LICENCJA — Generator ZUS US-7
-Wszelkie prawa zastrzeżone © 2026 Damian Marciniak
-========================================================
+LICENCJA OPROGRAMOWANIA
+Generator ZUS US-7 – Proprietary Software License v1.0
+© 2026 Damian Marciniak. Wszelkie prawa zastrzeżone.
 
-1. POSTANOWIENIA OGÓLNE
-
-   Niniejsza licencja („Licencja") reguluje zasady korzystania z programu
-   komputerowego „Generator ZUS US-7" („Program"), w tym jego kodu
-   źródłowego, plików binarnych, zasobów graficznych oraz wszelkiej
-   towarzyszącej dokumentacji.
-
-   Autorem i wyłącznym właścicielem praw autorskich do Programu jest
-   Damian Marciniak (GitHub: https://github.com/DAMIOTF), zwany dalej „Autorem".
+1. DEFINICJE
+„Program” oznacza oprogramowanie komputerowe Generator ZUS US-7, w tym jego:
+kod źródłowy
+pliki wykonywalne
+zasoby graficzne
+dokumentację
+wszelkie powiązane materiały
+„Autor” oznacza twórcę oprogramowania:
+Damian Marciniak
+GitHub: https://github.com/DAMIOTF
+„Użytkownik” oznacza osobę fizyczną lub prawną korzystającą z Programu.
 
 2. PRAWA AUTORSKIE
+Program stanowi utwór w rozumieniu ustawy z dnia 4 lutego 1994 r. o prawie autorskim i prawach pokrewnych oraz podlega ochronie na podstawie przepisów prawa polskiego oraz międzynarodowego.
+Wszelkie prawa autorskie majątkowe i osobiste do Programu przysługują wyłącznie Autorowi.
+Korzystanie z Programu nie powoduje przeniesienia jakichkolwiek praw własności intelektualnej.
+3. DOZWOLONY ZAKRES UŻYTKOWANIA
+Autor udziela Użytkownikowi niewyłącznej, nieprzenoszalnej i odwoływalnej licencji na:
+uruchamianie Programu
+korzystanie z Programu wyłącznie w celach osobistych lub testowych
+tworzenie kopii niezbędnych do uruchomienia Programu
+Licencja nie uprawnia do żadnych innych działań poza wyraźnie wskazanymi w niniejszym dokumencie.
 
-   Program jest chroniony przepisami ustawy z dnia 4 lutego 1994 r.
-   o prawie autorskim i prawach pokrewnych (Dz.U. z 2022 r. poz. 2509
-   ze zm.) oraz odpowiednimi przepisami prawa międzynarodowego, w tym
-   Konwencją Berneńską o ochronie dzieł literackich i artystycznych.
+4. ZAKAZ DYSTRYBUCJI
+Bez uprzedniej pisemnej zgody Autora zabrania się:
+rozpowszechniania Programu w całości lub w części
+publikowania Programu w repozytoriach kodu
+udostępniania Programu osobom trzecim
+hostowania plików instalacyjnych lub binarnych
+publikowania fragmentów kodu źródłowego
+Dotyczy to zarówno kodu źródłowego jak i skompilowanych plików wykonywalnych.
 
-   Autor zachowuje pełne i wyłączne prawa majątkowe oraz osobiste
-   do Programu.
+5. ZAKAZ WYKORZYSTANIA KOMERCYJNEGO
+Bez uprzedniej pisemnej zgody Autora zabrania się:
+sprzedaży Programu
+oferowania Programu odpłatnie
+włączania Programu do produktów komercyjnych
+wykorzystywania Programu w działalności zarobkowej
 
-3. ZAKAZ ROZPOWSZECHNIANIA
+6. MODYFIKACJA OPROGRAMOWANIA
+Użytkownik może dokonywać modyfikacji Programu wyłącznie na własny użytek prywatny.
+Zabrania się:
+dystrybucji zmodyfikowanych wersji Programu
+publikowania forków
+udostępniania zmodyfikowanego kodu
 
-   Zabrania się rozpowszechniania, udostępniania, publikowania,
-   kopiowania lub redystrybucji Programu (w całości lub w części)
-   w jakiejkolwiek formie — zarówno w postaci kodu źródłowego, jak
-   i skompilowanych plików wykonywalnych — bez uprzedniej, wyraźnej
-   i pisemnej zgody Autora.
+7. INŻYNIERIA WSTECZNA
+Zabrania się:
+dekompilacji
+deasemblacji
+analizy kodu binarnego
+podejmowania prób odtworzenia kodu źródłowego
+z wyjątkiem sytuacji dopuszczonych przez bezwzględnie obowiązujące przepisy prawa.
 
-   Dotyczy to w szczególności, lecz nie wyłącznie:
-   a) umieszczania Programu na stronach internetowych, repozytoriach
-      kodu, forach, serwisach hostingowych lub platformach dystrybucji,
-   b) przesyłania Programu drogą elektroniczną lub fizyczną osobom
-      trzecim,
-   c) publikowania fragmentów kodu źródłowego w artykułach, poradnikach
-      lub materiałach edukacyjnych.
+8. BRAK GWARANCJI
+Program jest udostępniany „AS IS” (w stanie takim, w jakim jest).
+Autor nie udziela żadnych gwarancji, w szczególności dotyczących:
+poprawności działania
+przydatności do określonego celu
+braku błędów
 
-4. ZAKAZ SPRZEDAŻY
+9. OGRANICZENIE ODPOWIEDZIALNOŚCI
+Autor nie ponosi odpowiedzialności za:
+utratę danych
+straty finansowe
+szkody pośrednie lub bezpośrednie
+jakiekolwiek konsekwencje wynikające z korzystania z Programu
 
-   Zabrania się sprzedaży Programu, oferowania go odpłatnie, włączania
-   go do produktów komercyjnych lub czerpania jakichkolwiek korzyści
-   majątkowych z tytułu udostępniania Programu — bez pisemnej zgody
-   Autora.
+10. NARUSZENIE LICENCJI
+Naruszenie postanowień niniejszej licencji może skutkować:
+natychmiastowym cofnięciem licencji
+odpowiedzialnością cywilną
+odpowiedzialnością karną zgodnie z przepisami ustawy o prawie autorskim
 
-5. ZAKAZ MODYFIKACJI I DYSTRYBUCJI ZMODYFIKOWANYCH WERSJI
+11. PRAWO WŁAŚCIWE
+Licencja podlega prawu Rzeczypospolitej Polskiej.
+Wszelkie spory wynikające z niniejszej licencji będą rozstrzygane przez właściwe sądy w Polsce.
 
-   Zabrania się modyfikowania, adaptowania, tłumaczenia, dekompilacji,
-   inżynierii wstecznej lub tworzenia dzieł pochodnych na podstawie
-   Programu w celu ich dalszej dystrybucji lub sprzedaży — bez pisemnej
-   zgody Autora.
-
-   Użytkownik może dokonywać modyfikacji wyłącznie na własny użytek
-   prywatny, pod warunkiem że zmodyfikowana wersja nie będzie
-   rozpowszechniana w żadnej formie.
-
-6. OBOWIĄZEK KONTAKTU
-
-   Wszelkie zamiary dotyczące rozpowszechniania, publikacji,
-   modyfikacji, sprzedaży lub jakiegokolwiek innego wykorzystania
-   Programu wykraczającego poza użytek osobisty wymagają uprzedniego
-   skontaktowania się z Autorem i uzyskania jego pisemnej zgody.
-
-   Kontakt z Autorem: kontakt@dmtf.ovh
-
-7. ODPOWIEDZIALNOŚĆ PRAWNA
-
-   Naruszenie postanowień niniejszej Licencji stanowi naruszenie praw
-   autorskich i może skutkować odpowiedzialnością cywilną oraz karną
-   na podstawie:
-
-   a) Art. 115–123 ustawy z dnia 4 lutego 1994 r. o prawie autorskim
-      i prawach pokrewnych — w szczególności:
-      - Art. 116 § 1: „Kto bez uprawnienia albo wbrew jego warunkom
-        rozpowszechnia cudzy utwór [...] podlega grzywnie, karze
-        ograniczenia wolności albo pozbawienia wolności do lat 2."
-      - Art. 117 § 1: „Kto [...] utrwala lub zwielokrotnia cudzy
-        utwór [...] podlega grzywnie, karze ograniczenia wolności
-        albo pozbawienia wolności do lat 2."
-
-   b) Odpowiednich przepisów Kodeksu cywilnego dot. ochrony dóbr
-      osobistych i odpowiedzialności odszkodowawczej.
-
-   Autor zastrzega sobie prawo dochodzenia roszczeń wobec osób
-   naruszających niniejszą Licencję.
-
-8. WYŁĄCZENIE GWARANCJI
-
-   Program jest udostępniany w stanie „takim, jaki jest" (AS IS),
-   bez jakiejkolwiek gwarancji, wyraźnej ani dorozumianej. Autor nie
-   ponosi odpowiedzialności za jakiekolwiek szkody wynikłe z użytkowania
-   Programu.
-
-9. POSTANOWIENIA KOŃCOWE
-
-   Niniejsza Licencja wchodzi w życie z dniem opublikowania Programu
-   i obowiązuje bezterminowo. Autor zastrzega sobie prawo do zmiany
-   warunków Licencji w dowolnym momencie.
-
-   W sprawach nieuregulowanych niniejszą Licencją zastosowanie mają
-   przepisy prawa polskiego.
-
-========================================================
-© 2026 Damian Marciniak — Wszelkie prawa zastrzeżone.
+12. KONTAKT
+Wszelkie zapytania dotyczące licencji należy kierować na adres: kontakt@dmtf.ovh
+© 2026 Damian Marciniak — All Rights Reserved.
