@@ -1,15 +1,13 @@
 # Generator ZUS US-7
 
 Profesjonalna aplikacja do **masowego generowania** wypełnionych formularzy ZUS US-7 na podstawie danych z pliku Excel.
-
+<img width="438" height="487" alt="obraz" src="https://github.com/user-attachments/assets/28b47309-9e6b-48f4-94eb-dac4e1e48e66" />
 ## Funkcje
 
 - Wypełnia szablon PDF (XFA) danymi osobowymi z arkusza Excel
 - Ciemny, nowoczesny interfejs GUI (tkinter)
 - Wielowątkowe generowanie — GUI nie blokuje się podczas pracy
 - Gotowy plik `.exe` — bez instalacji Pythona
-
-<img width="874" height="974" alt="obraz" src="https://github.com/user-attachments/assets/28b47309-9e6b-48f4-94eb-dac4e1e48e66" />
 
 ## struktura pliku .xlsx
 
