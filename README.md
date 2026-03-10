@@ -88,8 +88,8 @@ Wynikowy plik: `dist/Generator_ZUS_US7.exe`
 
 
 
-```
+
 **Wszelkie prawa zastrzeżone © 2026 Damian Marciniak.**
 
 Program jest objęty restrykcyjną licencją — zabrania się rozpowszechniania, sprzedaży, modyfikacji w celu redystrybucji oraz publikowania kodu źródłowego bez pisemnej zgody autora. Szczegóły w pliku [LICENSE](LICENSE).
-```
+
