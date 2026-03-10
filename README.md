@@ -2,7 +2,6 @@
 
 Profesjonalna aplikacja do **masowego generowania** wypełnionych formularzy ZUS US-7 na podstawie danych z pliku.
 
-<img width="438" height="487" alt="obraz" src="https://github.com/user-attachments/assets/28b47309-9e6b-48f4-94eb-dac4e1e48e66" />
 ## Funkcje
 
 - Wypełnia szablon PDF (XFA) danymi osobowymi z arkusza Excel
@@ -84,3 +83,4 @@ Wynikowy plik: `dist/Generator_ZUS_US7.exe`
 ## Autor
 
 **Damian Marciniak** · [github.com/DAMIOTF](https://github.com/DAMIOTF)
+**Kontakt:** · kontakt@dmtf.ovh
