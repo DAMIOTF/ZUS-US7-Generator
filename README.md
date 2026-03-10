@@ -1,16 +1,24 @@
 # Generator ZUS US-7
 
-Profesjonalna aplikacja do **masowego generowania** wypełnionych formularzy ZUS US-7 (wniosek o zaświadczenie / informację) na podstawie danych z pliku Excel.
+Profesjonalna aplikacja do **masowego generowania** wypełnionych formularzy ZUS US-7 na podstawie danych z pliku Excel.
 
 ## Funkcje
 
 - Wypełnia szablon PDF (XFA) danymi osobowymi z arkusza Excel
-- Obsługuje wszystkie 6 checkboxów pkt 3 formularza (w tym OFE)
 - Ciemny, nowoczesny interfejs GUI (tkinter)
-- Animowane przyciski i wskaźnik postępu
 - Wielowątkowe generowanie — GUI nie blokuje się podczas pracy
-- Dziennik operacji z kolorowymi statusami
 - Gotowy plik `.exe` — bez instalacji Pythona
+
+<img width="874" height="974" alt="obraz" src="https://github.com/user-attachments/assets/28b47309-9e6b-48f4-94eb-dac4e1e48e66" />
+
+## struktura pliku .xlsx
+
+| Lp | Imię  | Nazwisko   | Data urodzenia | PESEL       | Powiat   | Gmina               | Miejscowość | Kod pocztowy | Ulica         | Nr domu | Nr lokalu | Poczta              | Telefon   |
+| -- | ----- | ---------- | -------------- | ----------- | -------- | ------------------- | ----------- | ------------ | ------------- | ------- | --------- | ------------------- | --------- |
+| 1  | Jan   | Kowalski   | 1990-05-15     | 90051512345 | Warszawa | Warszawa            | Warszawa    | 00-001       | Marszałkowska | 10      | 5         | Warszawa            | 500100200 |
+| 2  | Anna  | Nowak      | 1985-11-20     | 85112067890 | bialski  | Międzyrzec Podlaski | Rogoźnica   | 21-560       |               | 42      |           | Międzyrzec Podlaski | 600300400 |
+| 3  | Piotr | Wiśniewski |                | 95030198765 |          |                     | Kraków      | 30-001       | Długa         | 5       |           | Kraków              |           |
+
 
 ## Szybki start (EXE)
 
