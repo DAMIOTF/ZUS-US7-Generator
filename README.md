@@ -10,6 +10,8 @@ Profesjonalna aplikacja do **masowego generowania** wypełnionych formularzy ZUS
 - Ciemny, nowoczesny interfejs GUI (tkinter)
 - Wielowątkowe generowanie — GUI nie blokuje się podczas pracy
 - Gotowy folder z `.exe` — bez instalacji Pythona
+<img width="777" height="222" alt="image" src="https://github.com/user-attachments/assets/f4a53cf6-ce58-4446-bd68-a1998fec31d6" />
+
 
 ## Jak to działa
 
@@ -18,7 +20,13 @@ Profesjonalna aplikacja do **masowego generowania** wypełnionych formularzy ZUS
 3. Ustaw datę wniosku, opcje formularza i folder wynikowy
 4. Kliknij **Generuj PDF** — aplikacja utworzy osobny plik PDF dla każdego wiersza danych
 
+<img width="783" height="568" alt="image" src="https://github.com/user-attachments/assets/694d7da4-44c0-4bbe-971e-df1fd71a961c" />
+
+
 > Pola bez przypisanej komórki zostaną puste w PDF. Jeśli nie podasz żadnego mapowania, generowanie się nie uruchomi.
+
+<img width="791" height="494" alt="image" src="https://github.com/user-attachments/assets/c4c86c2e-0a06-4487-b754-1749b3420c83" />
+
 
 ## Szybki start (EXE)
 
