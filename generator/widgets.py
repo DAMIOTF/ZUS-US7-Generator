@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Niestandardowe widgety tkinter używane przez aplikację Generator ZUS US-7.
 
@@ -10,8 +11,6 @@ Zawiera:
 Moduł rejestruje też metodę ``tk.Canvas.create_rounded_bg`` (monkey-patch)
 dostępną globalnie dla wszystkich instancji Canvas w aplikacji.
 """
-from __future__ import annotations
-
 import math
 import tkinter as tk
 from typing import Optional

@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 Metody budujące poszczególne sekcje formularza GUI.
 
 Klasa ``SectionsMixin`` jest wmiksowana do ``App`` i zawiera
 wszystkie metody ``_build_section_*`` oraz ``_build_footer``.
 """
-from __future__ import annotations
-
 import tkinter as tk
 from tkinter import ttk
 import webbrowser
@@ -63,6 +62,69 @@ class SectionsMixin:
         self._record_count_lbl = tk.Label(
             sheet_row, text="", font=FONT_SM, bg=C_SURFACE, fg=C_SUBTEXT)
         self._record_count_lbl.pack(side="left", padx=14)
+
+    # ── Mapowanie komórek ─────────────────────────────────────────────────────
+
+    def _build_section_cell_mapping(self, parent, **kw) -> None:
+        wrap  = self._section_wrap(parent, **self._padx_only(kw),
+                                   pady_top=0, pady_bot=0)
+        inner = self._card(wrap, "Mapowanie komórek Excel — podaj komórkę startową (np. B2)", "🗺")
+
+        hint = tk.Label(
+            inner,
+            text="Wpisz komórkę początkową dla każdego pola (np. B2). "
+                 "Dane będą czytane w dół od podanej komórki. "
+                 "Puste pole = pominięte w PDF.",
+            font=("Segoe UI", 8), bg=C_SURFACE, fg=C_SUBTEXT,
+            wraplength=650, justify="left",
+        )
+        hint.pack(fill="x", pady=(0, 8))
+
+        fields_info = [
+            ("imie",         "Imię"),
+            ("nazwisko",     "Nazwisko"),
+            ("pesel",        "PESEL"),
+            ("ulica",        "Ulica"),
+            ("nr_domu",      "Nr domu"),
+            ("nr_lokalu",    "Nr lokalu"),
+            ("kod_pocztowy", "Kod pocztowy"),
+            ("miejscowosc",  "Miejscowość"),
+            ("telefon",      "Telefon"),
+        ]
+
+        grid = tk.Frame(inner, bg=C_SURFACE)
+        grid.pack(fill="x")
+
+        cols = 3
+        for col_idx in range(cols):
+            grid.columnconfigure(col_idx * 2, weight=0)
+            grid.columnconfigure(col_idx * 2 + 1, weight=1)
+
+        self._cell_entries = {}  # type: dict
+
+        for idx, (key, label) in enumerate(fields_info):
+            col = idx % cols
+            row_idx = idx // cols
+
+            tk.Label(
+                grid, text=f"{label}:", font=FONT_BODY,
+                bg=C_SURFACE, fg=C_SUBTEXT,
+            ).grid(row=row_idx, column=col * 2, sticky="w",
+                   padx=(0 if col == 0 else 16, 6), pady=4)
+
+            entry = tk.Entry(
+                grid, textvariable=self._cell_vars[key],
+                font=FONT_BODY, relief="flat", bd=0,
+                bg=C_SURFACE2, fg=C_TEXT, insertbackground=C_TEXT,
+                width=8,
+            )
+            entry.grid(row=row_idx, column=col * 2 + 1, sticky="w",
+                       ipady=5, pady=4)
+            self._cell_entries[key] = entry
+
+        # Odśwież licznik rekordów po zmianie dowolnej komórki mapowania
+        for var in self._cell_vars.values():
+            var.trace_add("write", lambda *_: self.after(100, self._on_sheet_selected))
 
     def _setup_combobox_style(self) -> None:
         s = ttk.Style()

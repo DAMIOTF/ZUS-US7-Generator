@@ -8,6 +8,7 @@ __pycache__/
 dist/
 build/
 *.spec
+!zus_us7.spec
 
 # --- PyInstaller output ---
 /dist/

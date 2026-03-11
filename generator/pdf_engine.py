@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 Silnik PDF — wypełnianie szablonu ZUS US-7 przez manipulację strumieniem XFA.
 
 Publiczne API:
     fill_pdf(person, date_str, options) -> bytes
 """
-from __future__ import annotations
-
 import re
 
 import fitz  # PyMuPDF

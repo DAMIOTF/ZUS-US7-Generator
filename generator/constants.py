@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 """
 Stałe aplikacji: kolory, czcionki, ścieżki, URL-e.
 """
-from __future__ import annotations
-
 import os
 import sys
 

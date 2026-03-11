@@ -1,23 +1,23 @@
+# -*- coding: utf-8 -*-
 """
 Logika obsługi zdarzeń i generowania PDF.
 
 Klasa ``HandlersMixin`` jest wmiksowana do ``App`` i zawiera
 metody obsługi plików, logowania, zbierania opcji oraz generowania PDF.
 """
-from __future__ import annotations
-
 import datetime
 import os
 import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from typing import Dict, Optional
 
 import openpyxl
 
 from .constants import (
     C_GREEN, C_RED, C_SUBTEXT, C_YELLOW,
 )
-from .excel_loader import load_sheet_data
+from .excel_loader import load_sheet_data_mapped
 from .pdf_engine import fill_pdf
 
 
@@ -44,9 +44,9 @@ class HandlersMixin:
 
     def _update_stats(
         self,
-        total: int | None = None,
-        ok: int | None    = None,
-        err: int | None   = None,
+        total=None,  # type: Optional[int]
+        ok=None,     # type: Optional[int]
+        err=None,    # type: Optional[int]
     ) -> None:
         if total is not None:
             self._stat_total.configure(text=f"Wierszy: {total}")
@@ -85,10 +85,16 @@ class HandlersMixin:
         sheet = self._sheet_var.get()
         if not sheet or not self._wb_path.get():
             return
+        mapping = self._collect_cell_mapping()
+        if not mapping:
+            self._record_count_lbl.configure(
+                text="  ⚠  Podaj komórki mapowania", fg=C_YELLOW)
+            self._update_stats(total=0)
+            return
         try:
             wb     = openpyxl.load_workbook(
-                self._wb_path.get(), read_only=True, data_only=True)
-            people = load_sheet_data(wb, sheet)
+                self._wb_path.get(), read_only=False, data_only=True)
+            people = load_sheet_data_mapped(wb, sheet, mapping)
             wb.close()
             n = len(people)
             self._record_count_lbl.configure(
@@ -107,6 +113,19 @@ class HandlersMixin:
     def _reset_uzas(self) -> None:
         self._uzas_text.delete("1.0", "end")
         self._uzas_text.insert("1.0", self._uzasadnienie_default)
+
+    # =========================================================================
+    # Zbieranie mapowania komórek
+    # =========================================================================
+
+    def _collect_cell_mapping(self) -> Dict[str, str]:
+        """Zwraca słownik {nazwa_pola: ref_komórki} tylko dla niepustych pól."""
+        mapping = {}  # type: Dict[str, str]
+        for key, var in self._cell_vars.items():
+            val = var.get().strip()
+            if val:
+                mapping[key] = val
+        return mapping
 
     # =========================================================================
     # Zbieranie opcji PDF z GUI
@@ -147,6 +166,14 @@ class HandlersMixin:
             messagebox.showwarning("Brak daty", "Podaj datę wniosku.")
             return
 
+        cell_mapping = self._collect_cell_mapping()
+        if not cell_mapping:
+            messagebox.showwarning(
+                "Brak mapowania",
+                "Podaj przynajmniej jedną komórkę startową\n"
+                "w sekcji 'Mapowanie komórek Excel'.")
+            return
+
         options = self._collect_options()
 
         self._btn_generate.set_state("disabled")
@@ -164,7 +191,8 @@ class HandlersMixin:
 
         threading.Thread(
             target=self._generate_worker,
-            args=(excel_path, sheet_name, date_str, output_dir, options),
+            args=(excel_path, sheet_name, date_str, output_dir,
+                  options, cell_mapping),
             daemon=True,
         ).start()
 
@@ -175,11 +203,12 @@ class HandlersMixin:
         date_str: str,
         output_dir: str,
         options: dict,
+        cell_mapping,  # type: Dict[str, str]
     ) -> None:
         ok_count = err_count = 0
         try:
-            wb     = openpyxl.load_workbook(excel_path, read_only=True, data_only=True)
-            people = load_sheet_data(wb, sheet_name)
+            wb     = openpyxl.load_workbook(excel_path, read_only=False, data_only=True)
+            people = load_sheet_data_mapped(wb, sheet_name, cell_mapping)
             wb.close()
 
             if not people:

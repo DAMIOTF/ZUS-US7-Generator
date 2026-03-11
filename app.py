@@ -11,12 +11,25 @@ import os
 import openpyxl
 
 from generator.pdf_engine import fill_pdf
-from generator.excel_loader import load_sheet_data
+from generator.excel_loader import load_sheet_data_mapped
 
 EXCEL_FILE = "tabela.xlsx"
 SHEET_NAME = None          # None = pierwszy arkusz
 OUTPUT_DIR = "wyniki"
 DATE       = "10.03.2026"
+
+# Mapowanie komórek: pole -> komórka startowa (czyta w dół)
+DEFAULT_CELL_MAPPING = {
+    "imie":         "B2",
+    "nazwisko":     "C2",
+    "pesel":        "E2",
+    "ulica":        "J2",
+    "nr_domu":      "K2",
+    "nr_lokalu":    "L2",
+    "kod_pocztowy": "I2",
+    "miejscowosc":  "H2",
+    "telefon":      "N2",
+}
 
 DEFAULT_OPTIONS = {
     "radio_type":        "1",
@@ -37,9 +50,9 @@ DEFAULT_OPTIONS = {
 
 
 def main() -> None:
-    wb         = openpyxl.load_workbook(EXCEL_FILE, read_only=True, data_only=True)
+    wb         = openpyxl.load_workbook(EXCEL_FILE, read_only=False, data_only=True)
     sheet_name = SHEET_NAME or wb.sheetnames[0]
-    people     = load_sheet_data(wb, sheet_name)
+    people     = load_sheet_data_mapped(wb, sheet_name, DEFAULT_CELL_MAPPING)
     wb.close()
 
     print(f"Znaleziono {len(people)} rekordow w arkuszu '{sheet_name}'.")
