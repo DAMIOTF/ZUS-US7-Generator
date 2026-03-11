@@ -1,50 +1,92 @@
+# -*- coding: utf-8 -*-
 """
 Wczytywanie danych osobowych z arkusza Excel.
 
-Oczekiwany układ kolumn (od kolumny A):
-    lp | imię | nazwisko | data_ur | PESEL | powiat | gmina |
-    miejscowość | kod_pocztowy | ulica | nr_domu | nr_lokalu |
-    poczta | telefon | szkoła
+Tryb mapowania komórek:
+    Użytkownik podaje początkową komórkę (np. „B2") dla każdego pola.
+    Dane są czytane w dół kolumny aż do pierwszej pustej komórki.
 """
-from __future__ import annotations
+import re
+from typing import Dict, List, Tuple
+
+from openpyxl.utils import column_index_from_string
 
 
-def load_sheet_data(wb, sheet_name: str) -> list[dict]:
-    """Zwraca listę słowników z danymi osobowymi z arkusza *sheet_name*.
+def _parse_cell_ref(ref: str) -> Tuple[int, int]:
+    """Parsuje referencję komórki (np. 'B2') na (kolumna, wiersz) jako int.
 
-    Obsługuje regułę wiejską: gdy brak ulicy, jako ulicę przyjmuje
-    się nazwę miejscowości, a jako miasto — pocztę.
+    Zwraca krotkę (col_index, row_index) — oba 1-based.
+    Rzuca ValueError jeśli format jest nieprawidłowy.
+    """
+    ref = ref.strip().upper()
+    m = re.fullmatch(r"([A-Z]+)(\d+)", ref)
+    if not m:
+        raise ValueError(f"Nieprawidłowy format komórki: {ref!r}")
+    col = column_index_from_string(m.group(1))
+    row = int(m.group(2))
+    if row < 1:
+        raise ValueError(f"Numer wiersza musi być >= 1: {ref!r}")
+    return col, row
+
+
+def _read_column_down(ws, col: int, start_row: int) -> List[str]:
+    """Czyta wartości z kolumny *col* od wiersza *start_row* w dół.
+
+    Kończy na pierwszej pustej komórce.
+    """
+    values = []  # type: List[str]
+    row = start_row
+    while True:
+        cell = ws.cell(row=row, column=col)
+        if cell.value is None or str(cell.value).strip() == "":
+            break
+        values.append(str(cell.value).strip())
+        row += 1
+    return values
+
+
+# Nazwy pól i ich kolejność (klucze słownika person)
+FIELD_KEYS = [
+    "imie", "nazwisko", "pesel",
+    "ulica", "nr_domu", "nr_lokalu",
+    "kod_pocztowy", "miejscowosc", "telefon",
+]
+
+
+def load_sheet_data_mapped(
+    wb, sheet_name: str, cell_mapping: Dict[str, str],
+) -> List[dict]:
+    """Wczytuje dane z arkusza na podstawie mapowania komórek.
+
+    ``cell_mapping`` to słownik ``{nazwa_pola: ref_komórki}``,
+    np. ``{"imie": "B2", "nazwisko": "C2", "pesel": "E2"}``.
+    Pola bez mapowania zostają puste.
+
+    Liczba rekordów = najdłuższa kolumna z podanych mapowań.
     """
     ws = wb[sheet_name]
-    rows: list[dict] = []
 
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if len(row) < 15:
+    # Wczytaj kolumny dla pól, które mają przypisaną komórkę
+    columns = {}  # type: Dict[str, List[str]]
+    for field, ref in cell_mapping.items():
+        if not ref or not ref.strip():
             continue
-        (lp, imie, nazwisko, data_ur, pesel, powiat, gmina,
-         miejscowosc, kod_poczt, ulica, nr_domu, nr_lokalu,
-         poczta, telefon, szkola) = row[:15]
+        col, start_row = _parse_cell_ref(ref)
+        columns[field] = _read_column_down(ws, col, start_row)
 
-        if not pesel:
-            continue
+    if not columns:
+        return []
 
-        if not ulica:
-            ulica_val  = str(miejscowosc).strip() if miejscowosc else ""
-            miasto_val = str(poczta).strip()       if poczta      else ""
-        else:
-            ulica_val  = str(ulica).strip()
-            miasto_val = str(miejscowosc).strip()  if miejscowosc else ""
+    n = max(len(v) for v in columns.values())
+    if n == 0:
+        return []
 
-        rows.append({
-            "imie":         str(imie).strip()       if imie       else "",
-            "nazwisko":     str(nazwisko).strip()   if nazwisko   else "",
-            "pesel":        str(pesel).strip()       if pesel      else "",
-            "ulica":        ulica_val,
-            "nr_domu":      str(nr_domu).strip()    if nr_domu    else "",
-            "nr_lokalu":    str(nr_lokalu).strip()  if nr_lokalu  else "",
-            "kod_pocztowy": str(kod_poczt).strip()  if kod_poczt  else "",
-            "miejscowosc":  miasto_val,
-            "telefon":      str(telefon).strip()    if telefon    else "",
-        })
+    rows = []  # type: List[dict]
+    for i in range(n):
+        person = {}  # type: Dict[str, str]
+        for key in FIELD_KEYS:
+            vals = columns.get(key, [])
+            person[key] = vals[i] if i < len(vals) else ""
+        rows.append(person)
 
     return rows

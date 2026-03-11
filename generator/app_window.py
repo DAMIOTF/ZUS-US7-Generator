@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Główne okno aplikacji Generator ZUS US-7.
 
@@ -5,8 +6,6 @@ Klasa ``App`` dziedziczy po mixinach ``SectionsMixin`` i ``HandlersMixin``
 oraz ``tk.Tk``.  Inicjalizacja, nagłówek, układ scrollowalny i helpery UI
 pozostają tutaj — reszta jest w ``sections.py`` i ``handlers.py``.
 """
-from __future__ import annotations
-
 import datetime
 import math
 import os
@@ -70,6 +69,19 @@ class App(SectionsMixin, HandlersMixin, tk.Tk):
             "delivery_placowka": tk.BooleanVar(value=True),
             "delivery_poczta":   tk.BooleanVar(value=False),
             "delivery_pue":      tk.BooleanVar(value=False),
+        }
+
+        # ── Zmienne mapowania komórek Excel ───────────────────────────────────
+        self._cell_vars = {  # type: ignore
+            "imie":         tk.StringVar(),
+            "nazwisko":     tk.StringVar(),
+            "pesel":        tk.StringVar(),
+            "ulica":        tk.StringVar(),
+            "nr_domu":      tk.StringVar(),
+            "nr_lokalu":    tk.StringVar(),
+            "kod_pocztowy": tk.StringVar(),
+            "miejscowosc":  tk.StringVar(),
+            "telefon":      tk.StringVar(),
         }
         self._uzasadnienie_default = (
             "W związku z ubieganiem się o wsparcie w projekcie "
@@ -162,6 +174,7 @@ class App(SectionsMixin, HandlersMixin, tk.Tk):
         pad = dict(padx=24, pady=0)
         body = self._body
         self._build_section_excel(body,          **pad)
+        self._build_section_cell_mapping(body,   **pad)
         self._build_section_settings(body,       **pad)
         self._build_section_pdf_type(body,       **pad)
         self._build_section_checkboxes(body,     **pad)
