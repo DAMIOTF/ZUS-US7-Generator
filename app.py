@@ -2,7 +2,7 @@
 app.py - interfejs wiersza polecen (CLI) generatora ZUS US-7.
 
 Wymaga pliku tabela.xlsx w katalogu roboczym.
-Wynikowe pliki PDF zapisuje do folderu wyniki/.
+Wynikowe pliki zapisuje do folderu wyniki/ (podfoldery per osoba).
 
 Uzycie:
     python app.py
@@ -10,13 +10,16 @@ Uzycie:
 import os
 import openpyxl
 
-from generator.pdf_engine import fill_pdf
 from generator.excel_loader import load_sheet_data_mapped
+from generator import doc_types  # rejestracja typów następuje przy imporcie
 
 EXCEL_FILE = "tabela.xlsx"
 SHEET_NAME = None          # None = pierwszy arkusz
 OUTPUT_DIR = "wyniki"
 DATE       = "10.03.2026"
+
+# Które dokumenty generować (id z rejestru doc_types)
+SELECTED_DOCS = ["us7", "zalacznik2"]
 
 # Mapowanie komórek: pole -> komórka startowa (czyta w dół)
 DEFAULT_CELL_MAPPING = {
@@ -55,22 +58,36 @@ def main() -> None:
     people     = load_sheet_data_mapped(wb, sheet_name, DEFAULT_CELL_MAPPING)
     wb.close()
 
+    # Zbierz wybrane typy dokumentów
+    selected = [dt for dt in doc_types.get_all() if dt["id"] in SELECTED_DOCS]
+    doc_names = ", ".join(d["label"] for d in selected)
+
     print(f"Znaleziono {len(people)} rekordow w arkuszu '{sheet_name}'.")
+    print(f"Dokumenty: {doc_names}")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     ok = err = 0
     for person in people:
-        try:
-            first    = person["imie"].split()[0] if person["imie"] else "brak"
-            filename = f"ZUS {first} {person['nazwisko']}.pdf"
-            out_path = os.path.join(OUTPUT_DIR, filename)
-            with open(out_path, "wb") as fh:
-                fh.write(fill_pdf(person, DATE, DEFAULT_OPTIONS))
-            ok += 1
-            print(f"  [OK] {filename}")
-        except Exception as exc:
-            err += 1
-            print(f"  [ERR] {person.get('imie','')} {person.get('nazwisko','')}: {exc}")
+        first = person["imie"].split()[0] if person["imie"] else "brak"
+        folder_name = f"{first} {person['nazwisko']}"
+        person_dir = os.path.join(OUTPUT_DIR, folder_name)
+        os.makedirs(person_dir, exist_ok=True)
+
+        for dt in selected:
+            try:
+                fname = dt["filename_tpl"].format(
+                    imie=first,
+                    nazwisko=person["nazwisko"],
+                ) + dt["extension"]
+                out_path = os.path.join(person_dir, fname)
+                data = dt["generate"](person, DATE, DEFAULT_OPTIONS)
+                with open(out_path, "wb") as fh:
+                    fh.write(data)
+                ok += 1
+                print(f"  [OK] {folder_name}/{fname}")
+            except Exception as exc:
+                err += 1
+                print(f"  [ERR] {person.get('imie','')} {person.get('nazwisko','')} [{dt['label']}]: {exc}")
 
     print(f"\nGotowe  {ok} wygenerowanych, {err} bledow.")
     print(f"Folder: {os.path.abspath(OUTPUT_DIR)}")

@@ -17,8 +17,8 @@ import openpyxl
 from .constants import (
     C_GREEN, C_RED, C_SUBTEXT, C_YELLOW,
 )
+from . import doc_types
 from .excel_loader import load_sheet_data_mapped
-from .pdf_engine import fill_pdf
 
 
 class HandlersMixin:
@@ -166,6 +166,17 @@ class HandlersMixin:
             messagebox.showwarning("Brak daty", "Podaj datę wniosku.")
             return
 
+        # Zbierz wybrane typy dokumentów
+        selected_docs = [
+            dt for dt in doc_types.get_all()
+            if self._doc_vars.get(dt["id"], tk.BooleanVar(value=False)).get()
+        ]
+        if not selected_docs:
+            messagebox.showwarning(
+                "Brak dokumentów",
+                "Zaznacz przynajmniej jeden typ dokumentu do wygenerowania.")
+            return
+
         cell_mapping = self._collect_cell_mapping()
         if not cell_mapping:
             messagebox.showwarning(
@@ -185,14 +196,16 @@ class HandlersMixin:
 
         sep = "─" * 54
         self._log_write(sep, "muted")
+        docs_names = ", ".join(d["label"] for d in selected_docs)
         self._log_write(
             f"▶ Start  {datetime.datetime.now().strftime('%H:%M:%S')}  "
-            f"│  Arkusz: {sheet_name}  │  Data: {date_str}", "head")
+            f"│  Arkusz: {sheet_name}  │  Data: {date_str}\n"
+            f"  Dokumenty: {docs_names}", "head")
 
         threading.Thread(
             target=self._generate_worker,
             args=(excel_path, sheet_name, date_str, output_dir,
-                  options, cell_mapping),
+                  options, cell_mapping, selected_docs),
             daemon=True,
         ).start()
 
@@ -204,6 +217,7 @@ class HandlersMixin:
         output_dir: str,
         options: dict,
         cell_mapping,  # type: Dict[str, str]
+        selected_docs: list,
     ) -> None:
         ok_count = err_count = 0
         try:
@@ -218,35 +232,48 @@ class HandlersMixin:
                 return
 
             n = len(people)
+            total_steps = n * len(selected_docs)
             self.after(0, lambda: self._log_write(
-                f"  Znaleziono {n} rekordów do przetworzenia.", "inf"))
+                f"  Znaleziono {n} rekordów, "
+                f"{len(selected_docs)} typ(y) dokumentów.", "inf"))
             self.after(0, lambda: self._update_stats(total=n))
 
             os.makedirs(output_dir, exist_ok=True)
+            step = 0
 
             for idx, person in enumerate(people):
-                try:
-                    first = person["imie"].split()[0] if person["imie"] else "brak"
-                    fname = f"ZUS {first} {person['nazwisko']}.pdf"
-                    out   = os.path.join(output_dir, fname)
-                    pdf   = fill_pdf(person, date_str, options)
-                    with open(out, "wb") as fh:
-                        fh.write(pdf)
-                    ok_count += 1
-                    msg = f"  ✔  {fname}"
-                    self.after(0, lambda m=msg: self._log_write(m, "ok"))
-                except Exception as exc:
-                    err_count += 1
-                    name = f"{person.get('imie','')} {person.get('nazwisko','')}"
-                    msg  = f"  ✘  {name}: {exc}"
-                    self.after(0, lambda m=msg: self._log_write(m, "err"))
+                first = person["imie"].split()[0] if person["imie"] else "brak"
+                folder_name = f"{first} {person['nazwisko']}"
+                person_dir = os.path.join(output_dir, folder_name)
+                os.makedirs(person_dir, exist_ok=True)
 
-                pct  = (idx + 1) / n
-                ok_c = ok_count; err_c = err_count
-                self.after(0, lambda p=pct, o=ok_c, e=err_c: (
-                    self._progress_bar.set_progress(p),
-                    self._update_stats(ok=o, err=e),
-                ))
+                for dt in selected_docs:
+                    try:
+                        tpl   = dt["filename_tpl"]
+                        fname = tpl.format(
+                            imie=first,
+                            nazwisko=person["nazwisko"],
+                        ) + dt["extension"]
+                        out   = os.path.join(person_dir, fname)
+                        data  = dt["generate"](person, date_str, options)
+                        with open(out, "wb") as fh:
+                            fh.write(data)
+                        ok_count += 1
+                        msg = f"  ✔  {folder_name}/{fname}"
+                        self.after(0, lambda m=msg: self._log_write(m, "ok"))
+                    except Exception as exc:
+                        err_count += 1
+                        name = f"{person.get('imie','')} {person.get('nazwisko','')}"
+                        msg  = f"  ✘  {name} [{dt['label']}]: {exc}"
+                        self.after(0, lambda m=msg: self._log_write(m, "err"))
+
+                    step += 1
+                    pct  = step / total_steps
+                    ok_c = ok_count; err_c = err_count
+                    self.after(0, lambda p=pct, o=ok_c, e=err_c: (
+                        self._progress_bar.set_progress(p),
+                        self._update_stats(ok=o, err=e),
+                    ))
 
             ok_f  = ok_count
             err_f = err_count
@@ -256,15 +283,15 @@ class HandlersMixin:
                 self._progress_bar.animate_to(1.0)
                 self._dot.stop()
                 self._log_write(
-                    f"✔ Zakończono — {ok_f}/{total} plików wygenerowanych"
+                    f"✔ Zakończono — {ok_f} plików wygenerowanych"
                     + (f", błędy: {err_f}" if err_f else ""), "head")
                 self._log_write(f"  Folder: {output_dir}", "inf")
                 self._set_status(
-                    f"✔ Gotowe! {ok_f}/{total} plików",
+                    f"✔ Gotowe! {ok_f} plików ({total} osób)",
                     C_GREEN if not err_f else C_YELLOW)
                 self._btn_generate.set_state(
                     "normal", command=self._btn_generate._orig_command)
-                self._btn_generate.configure_text("⚡  Generuj PDF")
+                self._btn_generate.configure_text("⚡  Generuj dokumenty")
                 if ok_f:
                     try:
                         os.startfile(output_dir)
@@ -280,7 +307,7 @@ class HandlersMixin:
                 self._dot.stop()
                 self._btn_generate.set_state(
                     "normal", command=self._btn_generate._orig_command)
-                self._btn_generate.configure_text("⚡  Generuj PDF")
+                self._btn_generate.configure_text("⚡  Generuj dokumenty")
             self.after(0, _err)
 
     def _done_reset(self) -> None:
@@ -288,4 +315,4 @@ class HandlersMixin:
         self._set_status("Gotowy do generowania", C_SUBTEXT)
         self._btn_generate.set_state(
             "normal", command=self._btn_generate._orig_command)
-        self._btn_generate.configure_text("⚡  Generuj PDF")
+        self._btn_generate.configure_text("⚡  Generuj dokumenty")

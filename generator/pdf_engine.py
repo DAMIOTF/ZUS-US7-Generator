@@ -71,11 +71,21 @@ def fill_pdf(person: dict, date_str: str, options: dict) -> bytes:
     xml = set_xfa_field(xml, "Imie",          person["imie"])
     xml = set_xfa_field(xml, "Nazwisko",       person["nazwisko"])
     xml = set_xfa_field(xml, "Numer_PESEL",    person["pesel"])
-    xml = set_xfa_field(xml, "Ulica",          person["ulica"])
+
+    # Rozpoznanie wsi: gdy poczta != miejscowosc, miejscowosc to wioska → ulica
+    ulica       = person["ulica"].strip()
+    miejscowosc = person["miejscowosc"].strip()
+    poczta      = person.get("poczta", "").strip()
+    if poczta and poczta != miejscowosc and not ulica:
+        ulica = miejscowosc
+    if poczta:
+        miejscowosc = poczta
+
+    xml = set_xfa_field(xml, "Ulica",          ulica)
     xml = set_xfa_field(xml, "Numer_domu",     person["nr_domu"])
     xml = set_xfa_field(xml, "Numer_lokalu",   person["nr_lokalu"])
     xml = set_xfa_field(xml, "kod_pocztowy",   person["kod_pocztowy"])
-    xml = set_xfa_field(xml, "Miejscowosc",    person["miejscowosc"])
+    xml = set_xfa_field(xml, "Miejscowosc",    miejscowosc)
     xml = set_xfa_field(xml, "Numer_telefonu", person["telefon"])
     xml = set_xfa_field(xml, "Data",           date_str)
 

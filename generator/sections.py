@@ -17,18 +17,48 @@ from .constants import (
     FONT_BODY, FONT_H3, FONT_LOG, FONT_SM,
     GITHUB_URL,
 )
+from . import doc_types
 from .widgets import AnimatedButton, ModernCheckbox, ProgressBar, PulsingDot
 
 
 class SectionsMixin:
     """Mixin — sekcje formularza (budowa widgetów)."""
 
+    # ── Wybór dokumentów ──────────────────────────────────────────────────────
+
+    def _build_section_doc_selection(self, parent, **kw) -> None:
+        wrap  = self._section_wrap(parent, **self._padx_only(kw),
+                                   pady_top=16, pady_bot=0)
+        inner = self._card(wrap, "Wybór dokumentów do wygenerowania", "☰")
+
+        hint = tk.Label(
+            inner,
+            text="Zaznacz typy dokumentów, które mają zostać wygenerowane "
+                 "dla każdej osoby z arkusza.",
+            font=("Segoe UI", 8), bg=C_SURFACE, fg=C_SUBTEXT,
+            wraplength=650, justify="left",
+        )
+        hint.pack(fill="x", pady=(0, 8))
+
+        row = tk.Frame(inner, bg=C_SURFACE)
+        row.pack(fill="x")
+
+        for dt in doc_types.get_all():
+            cell = tk.Frame(row, bg=C_SURFACE)
+            cell.pack(side="left", padx=(0, 24), pady=2)
+            ModernCheckbox(
+                cell,
+                text=f'{dt["label"]}  ({dt["extension"]})',
+                variable=self._doc_vars[dt["id"]],
+                fg=C_TEXT, font=FONT_BODY,
+            ).pack(anchor="w")
+
     # ── Źródło danych ─────────────────────────────────────────────────────────
 
     def _build_section_excel(self, parent, **kw) -> None:
         wrap  = self._section_wrap(parent, **self._padx_only(kw),
                                    pady_top=16, pady_bot=0)
-        inner = self._card(wrap, "Źródło danych — plik Excel", "📂")
+        inner = self._card(wrap, "Źródło danych — plik Excel", "◈")
 
         file_row = tk.Frame(inner, bg=C_SURFACE)
         file_row.pack(fill="x", pady=(0, 8))
@@ -68,7 +98,7 @@ class SectionsMixin:
     def _build_section_cell_mapping(self, parent, **kw) -> None:
         wrap  = self._section_wrap(parent, **self._padx_only(kw),
                                    pady_top=0, pady_bot=0)
-        inner = self._card(wrap, "Mapowanie komórek Excel — podaj komórkę startową (np. B2)", "🗺")
+        inner = self._card(wrap, "Mapowanie komórek Excel — podaj komórkę startową (np. B2)", "⊞")
 
         hint = tk.Label(
             inner,
@@ -90,6 +120,10 @@ class SectionsMixin:
             ("kod_pocztowy", "Kod pocztowy"),
             ("miejscowosc",  "Miejscowość"),
             ("telefon",      "Telefon"),
+            ("wojewodztwo",  "Województwo"),
+            ("powiat",       "Powiat"),
+            ("gmina",        "Gmina"),
+            ("poczta",       "Poczta"),
         ]
 
         grid = tk.Frame(inner, bg=C_SURFACE)
@@ -183,7 +217,7 @@ class SectionsMixin:
     def _build_section_pdf_type(self, parent, **kw) -> None:
         wrap  = self._section_wrap(parent, **self._padx_only(kw),
                                    pady_top=0, pady_bot=0)
-        inner = self._card(wrap, "Rodzaj dokumentu (pkt 2 formularza)", "📄")
+        inner = self._card(wrap, "Rodzaj dokumentu (pkt 2 formularza)", "▤")
 
         row = tk.Frame(inner, bg=C_SURFACE)
         row.pack(fill="x")
@@ -291,7 +325,7 @@ class SectionsMixin:
     def _build_section_delivery(self, parent, **kw) -> None:
         wrap  = self._section_wrap(parent, **self._padx_only(kw),
                                    pady_top=0, pady_bot=0)
-        inner = self._card(wrap, "Sposób odbioru zaświadczenia (pkt 5 formularza)", "📬")
+        inner = self._card(wrap, "Sposób odbioru zaświadczenia (pkt 5 formularza)", "✉")
 
         row = tk.Frame(inner, bg=C_SURFACE)
         row.pack(fill="x")
@@ -335,7 +369,7 @@ class SectionsMixin:
         btn_row.pack(fill="x")
 
         self._btn_generate = AnimatedButton(
-            btn_row, text="⚡  Generuj PDF",
+            btn_row, text="⚡  Generuj dokumenty",
             command=self._on_generate,
             width=220, height=46,
             font=("Segoe UI", 13, "bold"))
@@ -360,7 +394,7 @@ class SectionsMixin:
 
         title_row = tk.Frame(log_card, bg=C_SURFACE)
         title_row.pack(fill="x", padx=14, pady=(10, 4))
-        tk.Label(title_row, text="🖥  Dziennik operacji",
+        tk.Label(title_row, text="▶  Dziennik operacji",
                  font=FONT_H3, bg=C_SURFACE, fg=C_ACCENT2).pack(side="left")
         self._style_btn(
             tk.Button(title_row, text="Wyczyść", font=("Segoe UI", 8),

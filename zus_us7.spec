@@ -3,37 +3,46 @@
 # PyInstaller spec — Generator ZUS US-7
 # Tryb: --onedir  (folder z exe + DLL-ami, lżejszy dla RAM niż --onefile)
 #
-# WAŻNE: ścieżka projektu zawiera spację ("ZUS US7"), przez co PyInstaller 6.x
-# nie może zapisać plików do katalogu build/dist.
-# Zawsze buduj z --workpath i --distpath wskazującymi na ścieżkę BEZ spacji:
+# Budowanie:
+#   python -m PyInstaller zus_us7.spec --clean
 #
-#   py -3.8 -m PyInstaller zus_us7.spec --clean --workpath C:\Temp\zus_build --distpath C:\Temp\zus_dist
-#
-# Gotowy folder dist\GeneratorZUS_US7 przenieś ręcznie do projektu.
+# Wynik: dist/GeneratorZUS_US7/
 
 from PyInstaller.utils.hooks import collect_all, collect_data_files, collect_submodules
+import os
 
-# --- PyMuPDF 1.24+ używa pakietu "pymupdf" (fitz jest tylko aliasem) ----------
-pymupdf_datas, pymupdf_bins, pymupdf_hidden = collect_all("pymupdf")
-fitz_datas,    fitz_bins,    fitz_hidden    = collect_all("fitz")
+SPEC_DIR = os.path.dirname(os.path.abspath(SPEC))
+
+# --- PyMuPDF 1.18.x — moduł "fitz" ------------------------------------------
+fitz_datas, fitz_bins, fitz_hidden = collect_all("fitz")
 
 # --- openpyxl: dane (szablony XML/xlsl) + ukryte importy ----------------------
 openpyxl_datas  = collect_data_files("openpyxl")
 openpyxl_hidden = collect_submodules("openpyxl")
 
+# --- python-docx (docx): dane + ukryte importy --------------------------------
+docx_datas  = collect_data_files("docx")
+docx_hidden = collect_submodules("docx")
+
+# --- lxml: ukryte importy ------------------------------------------------------
+lxml_hidden = collect_submodules("lxml")
+
 datas = (
-    pymupdf_datas
-    + fitz_datas
+    fitz_datas
     + openpyxl_datas
+    + docx_datas
     + [
-        ("szablon.pdf", "."),   # szablon ZUS US-7
-        ("ICO.ico",     "."),   # ikona aplikacji
+        (os.path.join(SPEC_DIR, "szablon.pdf"), "."),
+        (os.path.join(SPEC_DIR, "zalacznik2", "szablon_pusty.docx"), "zalacznik2"),
+        (os.path.join(SPEC_DIR, u"UPOWA\u017bNIENIE ZUS.docx"), "."),
+        (os.path.join(SPEC_DIR, "Zalacznik NR 8.pdf"), "."),
+        (os.path.join(SPEC_DIR, "ICO.ico"), "."),
     ]
 )
 
-binaries = pymupdf_bins + fitz_bins
+binaries = fitz_bins
 
-hidden = pymupdf_hidden + fitz_hidden + openpyxl_hidden
+hidden = fitz_hidden + openpyxl_hidden + docx_hidden + lxml_hidden
 
 # --- Moduły do wykluczenia (zmniejszenie rozmiaru / RAM) ----------------------
 excludes = [

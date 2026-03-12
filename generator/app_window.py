@@ -21,6 +21,7 @@ from .constants import (
     FONT_BODY, FONT_H3,
     resource_path,
 )
+from . import doc_types
 from .handlers import HandlersMixin
 from .sections import SectionsMixin
 
@@ -82,11 +83,20 @@ class App(SectionsMixin, HandlersMixin, tk.Tk):
             "kod_pocztowy": tk.StringVar(),
             "miejscowosc":  tk.StringVar(),
             "telefon":      tk.StringVar(),
+            "wojewodztwo":  tk.StringVar(),
+            "powiat":       tk.StringVar(),
+            "gmina":        tk.StringVar(),
+            "poczta":       tk.StringVar(),
         }
         self._uzasadnienie_default = (
             "W związku z ubieganiem się o wsparcie w projekcie "
             "współfinansowanym ze środków EFS"
         )
+
+        # ── Zmienne wyboru dokumentów ─────────────────────────────────────────
+        self._doc_vars = {}
+        for dt in doc_types.get_all():
+            self._doc_vars[dt["id"]] = tk.BooleanVar(value=(dt["id"] == "us7"))
 
         self._build_ui()
         self._start_header_animation()
@@ -173,6 +183,7 @@ class App(SectionsMixin, HandlersMixin, tk.Tk):
 
         pad = dict(padx=24, pady=0)
         body = self._body
+        self._build_section_doc_selection(body,   **pad)
         self._build_section_excel(body,          **pad)
         self._build_section_cell_mapping(body,   **pad)
         self._build_section_settings(body,       **pad)

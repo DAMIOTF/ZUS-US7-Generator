@@ -50,6 +50,7 @@ FIELD_KEYS = [
     "imie", "nazwisko", "pesel",
     "ulica", "nr_domu", "nr_lokalu",
     "kod_pocztowy", "miejscowosc", "telefon",
+    "wojewodztwo", "powiat", "gmina", "poczta",
 ]
 
 

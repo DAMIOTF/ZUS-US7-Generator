@@ -1,3 +1,5 @@
 PyMuPDF
 openpyxl
 Pillow
+python-docx
+lxml
