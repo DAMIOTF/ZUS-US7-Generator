@@ -24,6 +24,8 @@ Profesjonalna aplikacja do **masowego generowania** dokumentów ZUS na podstawie
 - Gotowy folder z `.exe` — bez instalacji Pythona
 - Architektura przygotowana pod rozbudowę o kolejne typy dokumentów
 
+<img width="777" height="222" alt="image" src="https://github.com/user-attachments/assets/f4a53cf6-ce58-4446-bd68-a1998fec31d6" />
+
 ## Jak to działa
 
 1. Zaznacz typy dokumentów do wygenerowania (checkboxy na górze)
@@ -32,6 +34,7 @@ Profesjonalna aplikacja do **masowego generowania** dokumentów ZUS na podstawie
 4. Ustaw datę wniosku, opcje formularza i folder wynikowy
 5. Kliknij **Generuj dokumenty** — aplikacja utworzy folder dla każdej osoby z wybranymi dokumentami
 
+<<<<<<< HEAD
 > Pola bez przypisanej komórki zostaną puste. Jeśli nie podasz żadnego mapowania, generowanie się nie uruchomi.
 
 ## Mapowanie pól Excel
@@ -51,6 +54,13 @@ Profesjonalna aplikacja do **masowego generowania** dokumentów ZUS na podstawie
 | Powiat | Załącznik 8 | Powiat |
 | Gmina | Załącznik 8 | Gmina |
 | Poczta | US-7, Załącznik 2, Upoważnienie, Załącznik 8 | Poczta (miasto nadrzędne dla wsi) |
+
+<img width="783" height="568" alt="image" src="https://github.com/user-attachments/assets/694d7da4-44c0-4bbe-971e-df1fd71a961c" />
+
+> Pola bez przypisanej komórki zostaną puste. Jeśli nie podasz żadnego mapowania, generowanie się nie uruchomi.
+
+<img width="791" height="494" alt="image" src="https://github.com/user-attachments/assets/c4c86c2e-0a06-4487-b754-1749b3420c83" />
+
 
 ## Szybki start (EXE)
 
